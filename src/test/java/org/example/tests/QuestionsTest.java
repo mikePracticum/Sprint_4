@@ -1,30 +1,33 @@
 package org.example.tests;
 
-import org.example.pages.MainPage;
-import org.junit.*;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.example.pages.MainPage;
+import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.firefox.FirefoxOptions;
 
 import java.util.Arrays;
 import java.util.Collection;
 
+import static org.junit.Assert.assertEquals;
+
 @RunWith(Parameterized.class)
-public class QuestionDropdownTest {
+public class QuestionsTest {
     private WebDriver driver;
     private MainPage mainPage;
 
-    private int questionIndex;
-    private String expectedAnswer;
-
-    public QuestionDropdownTest(int questionIndex, String expectedAnswer) {
-        this.questionIndex = questionIndex;
-        this.expectedAnswer = expectedAnswer;
-    }
+    @Parameterized.Parameter(0)
+    public int faqIndex;
+    @Parameterized.Parameter(1)
+    public String expectedAnswer;
 
     @Parameterized.Parameters
-    public static Collection<Object[]> faqData() {
+    public static Collection<Object[]> data() {
         return Arrays.asList(new Object[][]{
                 {0, "Сутки — 400 рублей. Оплата курьеру — наличными или картой."},
                 {1, "Пока что у нас так: один заказ — один самокат. Если хотите покататься с друзьями, можете просто сделать несколько заказов — один за другим."},
@@ -39,23 +42,29 @@ public class QuestionDropdownTest {
 
     @Before
     public void setUp() {
-        System.setProperty("webdriver.chrome.driver", "path/to/chromedriver");
-        driver = new ChromeDriver();
-        driver.get("URL_OF_YOUR_PAGE");
-        mainPage = new MainPage(driver);
+        /* System.setProperty("webdriver.chrome.driver",  "/Users/mihailkrikun/projects/Sprint_4/drivers/chromedriver");
+         ChromeOptions options = new ChromeOptions();
+         options.addArguments("--no-sandbox", "--disable-dev-shm-usage");
+         driver = new ChromeDriver(options);*/
+
+        System.setProperty("webdriver.gecko.driver", "/Users/mihailkrikun/projects/Sprint_4/drivers/geckodriver");
+        FirefoxOptions options = new FirefoxOptions();
+
+        options.setBinary("/Applications/Firefox.app/Contents/MacOS/firefox");
+        driver = new FirefoxDriver(options);
+
+        driver.get("https://qa-scooter.praktikum-services.ru/");
     }
 
     @Test
-    public void testFAQ() {
-        mainPage.clickQuestion(questionIndex);
-        String actualAnswer = mainPage.getAnswerText(questionIndex);
-        Assert.assertEquals("Answer for question " + (questionIndex + 1) + " does not match.", expectedAnswer, actualAnswer);
+    public void checkFaqAnswer() {
+        mainPage.clickFaqDropdown(faqIndex);
+        String actualAnswer = mainPage.getFaqAnswer(faqIndex);
+        assertEquals(expectedAnswer, actualAnswer);
     }
 
     @After
     public void tearDown() {
-        if (driver != null) {
-            driver.quit();
-        }
+        driver.quit();
     }
 }
