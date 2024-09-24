@@ -8,6 +8,7 @@ import org.junit.runners.Parameterized;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.example.pages.MainPage;
+import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.firefox.FirefoxOptions;
 
@@ -29,7 +30,7 @@ public class QuestionsTest {
     @Parameterized.Parameters
     public static Collection<Object[]> data() {
         return Arrays.asList(new Object[][]{
-                {0, "Сутки — 400 рублей. Оплата курьеру — наличными или картой."},
+                {0, "Сутки — 4000 рублей. Оплата курьеру — наличными или картой."},
                 {1, "Пока что у нас так: один заказ — один самокат. Если хотите покататься с друзьями, можете просто сделать несколько заказов — один за другим."},
                 {2, "Допустим, вы оформляете заказ на 8 мая. Мы привозим самокат 8 мая в течение дня. Отсчёт времени аренды начинается с момента, когда вы оплатите заказ курьеру. Если мы привезли самокат 8 мая в 20:30, суточная аренда закончится 9 мая в 20:30."},
                 {3, "Только начиная с завтрашнего дня. Но скоро станем расторопнее."},
@@ -42,23 +43,25 @@ public class QuestionsTest {
 
     @Before
     public void setUp() {
-        /* System.setProperty("webdriver.chrome.driver",  "/Users/mihailkrikun/projects/Sprint_4/drivers/chromedriver");
-         ChromeOptions options = new ChromeOptions();
-         options.addArguments("--no-sandbox", "--disable-dev-shm-usage");
-         driver = new ChromeDriver(options);*/
+        System.setProperty("webdriver.chrome.driver",  "/Users/mihailkrikun/projects/Sprint_4/drivers/chromedriver");
+        ChromeOptions options = new ChromeOptions();
+        options.addArguments("--no-sandbox", "--disable-dev-shm-usage");
+        driver = new ChromeDriver(options);
 
-        System.setProperty("webdriver.gecko.driver", "/Users/mihailkrikun/projects/Sprint_4/drivers/geckodriver");
+        /*System.setProperty("webdriver.gecko.driver", "/Users/mihailkrikun/projects/Sprint_4/drivers/geckodriver");
         FirefoxOptions options = new FirefoxOptions();
-
         options.setBinary("/Applications/Firefox.app/Contents/MacOS/firefox");
-        driver = new FirefoxDriver(options);
+        driver = new FirefoxDriver(options);*/
 
         driver.get("https://qa-scooter.praktikum-services.ru/");
+        mainPage = new MainPage(driver);
     }
+
 
     @Test
     public void checkFaqAnswer() {
-        mainPage.clickFaqDropdown(faqIndex);
+        mainPage.acceptCookies();
+        mainPage.clickFaqHeading(faqIndex);
         String actualAnswer = mainPage.getFaqAnswer(faqIndex);
         assertEquals(expectedAnswer, actualAnswer);
     }
