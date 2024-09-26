@@ -17,6 +17,7 @@ public class MainPage {
     private final By faqDropdownButtons = By.xpath(".//div[@class='accordion__button']");
     private final By faqAnswers = By.xpath(".//div[@data-accordion-component='AccordionItemPanel']/p");
     private final By acceptCookieButton = By.id("rcc-confirm-button");
+    public static final String SCOOTER_URL = "https://qa-scooter.praktikum-services.ru/";
 
     @FindBy(className = "Button_Button__ra12g")
     private WebElement orderButtonTop;
