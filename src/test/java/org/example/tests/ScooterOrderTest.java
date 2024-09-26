@@ -1,43 +1,118 @@
 package org.example.tests;
 
-import org.openqa.selenium.By;
+import org.example.pages.MainPage;
+import org.example.pages.OrderPage;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
-import org.openqa.selenium.support.ui.ExpectedConditions;
-import org.openqa.selenium.support.ui.WebDriverWait;
-import org.testng.annotations.Test;
+import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.firefox.FirefoxOptions;
 
-import java.time.Duration;
+import java.util.Arrays;
+import java.util.Collection;
 
+import static org.junit.Assert.assertTrue;
+
+@RunWith(Parameterized.class)
 public class ScooterOrderTest {
+    private WebDriver driver;
 
-    @Test
-    public void testScooterOrder() {
-        System.setProperty("webdriver.chrome.driver", "/path/to/chromedriver");
+    private final String firstName;
+    private final String lastName;
+    private final String address;
+    private final String metroStation;
+    private final String phoneNumber;
+    private final String deliveryDate;
+    private final String rentalPeriod;
+    private final String comment;
+    private final boolean blackColor;
+    private final boolean greyColor;
 
+    public ScooterOrderTest(String firstName, String lastName, String address, String metroStation, String phoneNumber,
+                            String deliveryDate, String rentalPeriod, String comment, boolean blackColor, boolean greyColor) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.address = address;
+        this.metroStation = metroStation;
+        this.phoneNumber = phoneNumber;
+        this.deliveryDate = deliveryDate;
+        this.rentalPeriod = rentalPeriod;
+        this.comment = comment;
+        this.blackColor = blackColor;
+        this.greyColor = greyColor;
+    }
+
+    @Parameterized.Parameters
+    public static Collection<Object[]> testData() {
+        return Arrays.asList(new Object[][]{
+                {"Иван", "Иванов", "Москва, ул. Ленина, 1", "Черкизовская", "89999999999", "31.07.2024", "сутки", "Комментарий 1", true, false},
+                {"Петр", "Петров", "Москва, ул. Ленина, 2", "Черкизовская", "89999999998", "01.08.2024", "трое суток", "Комментарий 2", false, true},
+        });
+    }
+
+    @Before
+    public void setUp() {
+        System.setProperty("webdriver.chrome.driver",  "drivers/chromedriver");
         ChromeOptions options = new ChromeOptions();
-        options.addArguments("headless");  // Remove this line for non-headless mode
-        WebDriver driver = new ChromeDriver(options);
+        options.addArguments("--no-sandbox", "--disable-dev-shm-usage");
+        driver = new ChromeDriver(options);
 
-        try {
-            driver.get("http://yourwebsite.com");
+        /*System.setProperty("webdriver.gecko.driver", "drivers/geckodriver");
+        FirefoxOptions options = new FirefoxOptions();
+        options.setBinary(System.getenv("FIREFOX_BINARY_PATH"));
+        driver = new FirefoxDriver(options);*/
 
-            WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(20));
+        driver.get(MainPage.SCOOTER_URL);
+    }
 
-            System.out.println("Waiting for order button to be clickable...");
-            WebElement orderButton = wait.until(ExpectedConditions.elementToBeClickable(By.id("order_button_top")));
-            System.out.println("Order button is clickable.");
-
-            orderButton.click();
-
-            // Add assertions and further interactions here
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
+    @After
+    public void tearDown() {
+        if (driver != null) {
             driver.quit();
         }
     }
+
+    @Test
+    public void testScooterOrderTopButton() {
+        MainPage mainPage = new MainPage(driver);
+        OrderPage orderPage = new OrderPage(driver);
+
+        // Первый заказ через верхнюю кнопку
+        mainPage.clickOrderButtonTop();
+        orderPage.fillPersonalDetails(firstName, lastName, address, metroStation, phoneNumber);
+        orderPage.clickNextButton();
+        orderPage.fillOrderDetails(deliveryDate, rentalPeriod, comment, blackColor, greyColor);
+        orderPage.clickOrderButton();
+        orderPage.clickConfirmOrderButton();
+
+        // Проверка, что сообщение "Заказ оформлен" отображается
+        assertTrue("Order success message should be displayed", orderPage.isOrderSuccessMessageDisplayed());
+    }
+
+    @Test
+    public void testScooterOrderBottomButton() {
+        MainPage mainPage = new MainPage(driver);
+        OrderPage orderPage = new OrderPage(driver);
+
+        // Переход на главную страницу для второго заказа
+        driver.get("https://qa-scooter.praktikum-services.ru/");
+
+        // Второй заказ через нижнюю кнопку
+        mainPage.acceptCookies();
+        mainPage.clickOrderButtonBottom();
+        orderPage.fillPersonalDetails(firstName, lastName, address, metroStation, phoneNumber);
+        orderPage.clickNextButton();
+        orderPage.fillOrderDetails(deliveryDate, rentalPeriod, comment, blackColor, greyColor);
+        orderPage.clickOrderButton();
+        orderPage.clickConfirmOrderButton();
+
+        // Проверка, что сообщение "Заказ оформлен" отображается
+        assertTrue("Order success message should be displayed", orderPage.isOrderSuccessMessageDisplayed());
+    }
+
 }
