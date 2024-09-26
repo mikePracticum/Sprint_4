@@ -67,7 +67,7 @@ public class ScooterOrderTest {
         options.setBinary(System.getenv("FIREFOX_BINARY_PATH"));
         driver = new FirefoxDriver(options);*/
 
-        driver.get("https://qa-scooter.praktikum-services.ru/");
+        driver.get(MainPage.SCOOTER_URL);
     }
 
     @After
