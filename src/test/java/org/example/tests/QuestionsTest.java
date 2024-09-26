@@ -53,7 +53,7 @@ public class QuestionsTest {
         options.setBinary(System.getenv("FIREFOX_BINARY_PATH"));
         driver = new FirefoxDriver(options);*/
 
-        driver.get("https://qa-scooter.praktikum-services.ru/");
+        driver.get(MainPage.SCOOTER_URL);
         mainPage = new MainPage(driver);
     }
 
