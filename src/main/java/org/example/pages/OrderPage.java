@@ -86,7 +86,9 @@ public class OrderPage {
     public void clickConfirmOrderButton() {
         driver.findElement(confirmOrderButton).click();
     }
-    public boolean isOrderConfirmationDisplayed() {
-        return wait.until(ExpectedConditions.visibilityOfElementLocated(orderConfirmation)).isDisplayed();
+    public boolean isOrderSuccessMessageDisplayed() {
+        WebElement successMessageElement = wait.until(ExpectedConditions.visibilityOfElementLocated(orderConfirmation));
+        String successMessageText = successMessageElement.getText();
+        return successMessageText.contains("Заказ оформлен");
     }
 }
