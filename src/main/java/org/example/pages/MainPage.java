@@ -46,10 +46,10 @@ public class MainPage {
             orderButtonBottom.click();
     }
 
-    public void fillScooterOrderForm() {
+    public void fillScooterOrderForm(String deliveryDate) {
             WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
             WebElement dateField = wait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector("input[placeholder='* Когда привезти самокат']")));
-            dateField.sendKeys("01.08.2024");
+            dateField.sendKeys(deliveryDate);
     }
     public void acceptCookies() {
         WebElement cookieButton = wait.until(ExpectedConditions.elementToBeClickable(acceptCookieButton));
