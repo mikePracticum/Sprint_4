@@ -57,14 +57,14 @@ public class ScooterOrderTest {
 
     @Before
     public void setUp() {
-        System.setProperty("webdriver.chrome.driver",  "/Users/mihailkrikun/projects/Sprint_4/drivers/chromedriver");
+        System.setProperty("webdriver.chrome.driver",  "drivers/chromedriver");
         ChromeOptions options = new ChromeOptions();
         options.addArguments("--no-sandbox", "--disable-dev-shm-usage");
         driver = new ChromeDriver(options);
 
-        /*System.setProperty("webdriver.gecko.driver", "/Users/mihailkrikun/projects/Sprint_4/drivers/geckodriver");
+        /*System.setProperty("webdriver.gecko.driver", "drivers/geckodriver");
         FirefoxOptions options = new FirefoxOptions();
-        options.setBinary("/Applications/Firefox.app/Contents/MacOS/firefox");
+        options.setBinary(System.getenv("FIREFOX_BINARY_PATH"));
         driver = new FirefoxDriver(options);*/
 
         driver.get("https://qa-scooter.praktikum-services.ru/");
