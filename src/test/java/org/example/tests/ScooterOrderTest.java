@@ -78,10 +78,11 @@ public class ScooterOrderTest {
     }
 
     @Test
-    public void testScooterOrder() {
+    public void testScooterOrderTopButton() {
         MainPage mainPage = new MainPage(driver);
         OrderPage orderPage = new OrderPage(driver);
 
+        // Первый заказ через верхнюю кнопку
         mainPage.clickOrderButtonTop();
         orderPage.fillPersonalDetails(firstName, lastName, address, metroStation, phoneNumber);
         orderPage.clickNextButton();
@@ -89,14 +90,29 @@ public class ScooterOrderTest {
         orderPage.clickOrderButton();
         orderPage.clickConfirmOrderButton();
 
+        // Проверка, что сообщение "Заказ оформлен" отображается
+        assertTrue("Order success message should be displayed", orderPage.isOrderSuccessMessageDisplayed());
+    }
+
+    @Test
+    public void testScooterOrderBottomButton() {
+        MainPage mainPage = new MainPage(driver);
+        OrderPage orderPage = new OrderPage(driver);
+
+        // Переход на главную страницу для второго заказа
         driver.get("https://qa-scooter.praktikum-services.ru/");
 
+        // Второй заказ через нижнюю кнопку
+        mainPage.acceptCookies();
         mainPage.clickOrderButtonBottom();
         orderPage.fillPersonalDetails(firstName, lastName, address, metroStation, phoneNumber);
         orderPage.clickNextButton();
         orderPage.fillOrderDetails(deliveryDate, rentalPeriod, comment, blackColor, greyColor);
         orderPage.clickOrderButton();
         orderPage.clickConfirmOrderButton();
+
+        // Проверка, что сообщение "Заказ оформлен" отображается
+        assertTrue("Order success message should be displayed", orderPage.isOrderSuccessMessageDisplayed());
     }
 
 }
